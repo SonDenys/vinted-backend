@@ -1,20 +1,21 @@
-// Import des models
+// Import models
 const User = require("../models/User");
 
 const isAuthenticated = async (req, res, next) => {
   try {
-    // Récupérer le token envoyé depuis le client
+    // Get back the token sent from the customer
     const token = req.headers.authorization.replace("Bearer ", "");
 
-    // Chercher le user qui possède ce token
+    // Look for the user who have the token
     if (req.headers.authorization) {
       const user = await User.findOne({
         token: token,
       }).select("account email");
-      //  Si on ne le trouve pas ==> (Unauthorized)
+
+      // If we don't find it ==> (Unauthorized)
       if (!user) {
         return res.status(401).json({ error: "Unauthorized" });
-        // Sinon ==> next()
+        // If not  ==> next()
       } else {
         req.user = user;
         next();

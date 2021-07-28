@@ -11,7 +11,7 @@ const User = mongoose.model("User", {
       type: String,
     },
     phone: String,
-    avatar: mongoose.Schema.Types.Mixed, // accepte nimporte quel type de variable
+    avatar: mongoose.Schema.Types.Mixed, // accept any variables
   },
   token: String,
   hash: String,

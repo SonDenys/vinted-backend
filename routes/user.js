@@ -3,20 +3,20 @@ const router = express.Router();
 const uid2 = require("uid2");
 const SHA256 = require("crypto-js/sha256");
 const encBase64 = require("crypto-js/enc-base64");
-// Import des models
+// Import models
 const User = require("../models/User");
 
 router.post("/user/signup", async (req, res) => {
   try {
-    // Vérifier que l'email reçu n'existe pas déjà dans la BDD
+    // Check if the email doesn't already exist in the database
     const user = await User.findOne({ email: req.fields.email });
     if (!user) {
-      // S'il n'existe pas => inscription
-      // Encrypter le mot de passe
+      // if it doesn't exist => inscription
+      // Encrypt the password
       const salt = uid2(16);
       const hash = SHA256(req.fields.password + salt).toString(encBase64);
       const token = uid2(64);
-      // Créer un nouveau user
+      // Create a new user
       const newUser = new User({
         email: req.fields.email,
         account: {
@@ -29,14 +29,13 @@ router.post("/user/signup", async (req, res) => {
       });
 
       await newUser.save();
-      // Répondre au client
+      // Answer to the client
       res.status(200).json({
         email: newUser.email,
         account: newUser.account,
         token: newUser.token,
       });
     } else {
-      // Sinon ==> erreur
       res.status(409).json({ message: "This email already has an account." });
     }
   } catch (error) {
@@ -46,14 +45,15 @@ router.post("/user/signup", async (req, res) => {
 
 router.post("/user/login", async (req, res) => {
   try {
-    // Chercher le user qui veut se connecter
+    // Check the user who wants to connect
     const user = await User.findOne({ email: req.fields.email });
     if (user) {
-      // Créer un nouveau hash avec le mot de passe rentré à la connexion
+      // Create a new hash with the password
       const newHash = SHA256(req.fields.password + user.salt).toString(
         encBase64
       );
-      // Si le hash de la BDD et le nouveau hash sont égaux ==> connexion OK
+
+      // If the hash of the database and the new hash are equals ==> connecxion OK
       if (newHash === user.hash) {
         res.status(200).json({
           email: user.email,
@@ -66,8 +66,7 @@ router.post("/user/login", async (req, res) => {
     } else {
       res.status(401).json({ message: "Unauthorized" });
     }
-
-    // Sinon ==> Unauthorized
+    // If not ==> Unauthorized
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

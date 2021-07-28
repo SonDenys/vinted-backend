@@ -74,8 +74,8 @@ router.get("/offers", async (req, res) => {
 
     if (req.query.title) {
       filters.product_name = new RegExp(req.query.title, "i");
-      // ajoute une clé product_name à l'objet filters
-      // cette clé a pour valeur new RegExp(req.query.title, "i")
+      // add a key product_name to the object filters
+      // this key has value new RegExp(req.query.title, "i")
     }
 
     if (req.query.priceMin) {
@@ -112,7 +112,7 @@ router.get("/offers", async (req, res) => {
       .limit(limit)
       .select("product_name product_price");
 
-    const count = await Offer.countDocuments(filters); // renvoyer le nombre de documents qui matchent avec filters
+    const count = await Offer.countDocuments(filters); // give the number of documents that matches with filters
 
     res.status(200).json({ count: count, offers: offers });
   } catch (error) {
