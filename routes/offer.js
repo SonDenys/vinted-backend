@@ -9,9 +9,9 @@ const User = require("../models/User");
 
 // Import Cloudinary
 cloudinary.config({
-  cloud_name: "dw8gk1bl8",
-  api_key: "953134798363293",
-  api_secret: "4zEBxuthwmlKJmQMAIOD1bXEH9I",
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
   secure: true,
 });
 
