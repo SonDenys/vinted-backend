@@ -2,7 +2,6 @@ const express = require("express");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const router = express.Router();
 const cloudinary = require("cloudinary").v2;
-const fileUpload = require("express-fileupload");
 
 // Import models
 const Offer = require("../models/Offer");
@@ -150,6 +149,20 @@ router.get("/offer/:id", async (req, res) => {
   } catch (error) {
     // gestion des erreurs : si une erreur se produit dans le bloc try, on la traite ici
     // envoi d'une réponse d'erreur avec un code HTTP 400 et le message d'erreur
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// /* ------------ définition de la route pour supprimer une offre */ -------------------------- **
+router.delete("/offer/delete/:id", isAuthenticated, async (req, res) => {
+  try {
+    const offerToDelete = await Offer.findById(req.params.id);
+    const imgId = offerToDelete._id;
+    await cloudinary.api.delete_resources_by_prefix(`vinted/offers/${imgId}`);
+
+    await offerToDelete.delete();
+    res.status(200).json("Offer deleted successfully");
+  } catch (error) {
     res.status(400).json({ message: error.message });
   }
 });

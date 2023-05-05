@@ -8,10 +8,18 @@ const User = mongoose.model("User", {
   account: {
     username: {
       required: true,
+      unique: true,
       type: String,
     },
-    phone: String,
-    avatar: mongoose.Schema.Types.Mixed, // accept any variables
+    phone: {
+      unique: true,
+      type: String,
+    },
+  },
+  profile: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Profile",
+    unique: true,
   },
   token: String,
   hash: String,
